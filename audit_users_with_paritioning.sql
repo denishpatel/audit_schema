@@ -42,39 +42,25 @@ CREATE OR REPLACE FUNCTION public.users_audit_trig()
  LANGUAGE plpgsql
 AS $function$
 begin
-
                 IF      TG_OP = 'INSERT'
-
                 THEN
-
                         INSERT INTO audit.users_audit (operation, after)
 
                                 VALUES (TG_OP, to_jsonb(NEW));
-
                         RETURN NEW;
-
                 ELSIF   TG_OP = 'UPDATE'
-
                 THEN
-
                     IF NEW != OLD THEN
                              INSERT INTO audit.users_audit (operation, before, after)
-
                                 VALUES (TG_OP, to_jsonb(OLD), to_jsonb(NEW));
-
                     END IF;
                     RETURN NEW;
-
                 ELSIF   TG_OP = 'DELETE'
-
                 THEN
-
                         INSERT INTO audit.users_audit (operation, before)
 
                                 VALUES (TG_OP, to_jsonb(OLD));
-
                         RETURN OLD;
-
                 END IF;
 end;
 $function$ ;
